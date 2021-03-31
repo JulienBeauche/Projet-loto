@@ -10,6 +10,8 @@ namespace Loto2020_Correction
     {
         // Les 9 colonnes de la lignes
         int[] lesNumeros;
+        // Les Numéros marqués sur la ligne ( 5 au Max )
+        List<int> marquage;
 
         /// <summary>
         /// Constructeur par défaut, la ligne est vide et non marquée
@@ -18,7 +20,32 @@ namespace Loto2020_Correction
         private Ligne()
         {
             lesNumeros = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            Nettoyer();
         }
+
+        /// <summary>
+        /// Constructeur par copie.
+        /// L'objet retourné comprend les mêmes informations que l'original, mais...C'est une copie !
+        /// </summary>
+        /// <param name="ligneACopie"></param>
+        public Ligne(Ligne ligneACopier) : this()
+        {
+            // On copie les numéros
+            ligneACopier.lesNumeros.CopyTo(this.lesNumeros, 0);
+            // et ceux déjà marqués
+            this.marquage.AddRange(ligneACopier.marquage);
+        }
+
+
+        /// <summary>
+        /// DéMarque completement un ligne :
+        /// on efface la ligne mais on garde son contenu
+        /// </summary>
+        public void Nettoyer()
+        {
+            marquage = new List<int>();
+        }
+
 
         /// <summary>
         /// Constructeur à paramètre : Un tableau de 5 valeur pour initialiser la ligne
@@ -59,6 +86,18 @@ namespace Loto2020_Correction
         }
 
         /// <summary>
+        /// Indique si une ligne est une Quine
+        /// </summary>
+        public bool EstQuine
+        {
+            get
+            {
+                // C'est le cas si on a marqué les 5 nombres de la Ligne
+                return (marquage.Count == 5);
+            }
+        }
+
+        /// <summary>
         /// Accède à la ligne comme à un tableau
         /// </summary>
         /// <param name="index">La position à lire (entre 0 et 8)</param>
@@ -77,5 +116,89 @@ namespace Loto2020_Correction
             }
         }
 
+        /// <summary>
+        /// Accède à la ligne comme un tableau d'informations à deux dimensions :
+        /// 0 : Les Numéros -> Comme this[int index]
+        /// 1 : Indique si le numéro est marqué : 0:Non, 1:Oui
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public int this[int info, int index]
+        {
+            get
+            {
+                if ((info >= 0) && (info <= 1))
+                {
+                    switch (info)
+                    {
+                        case 0:
+                            return this[index];
+                        case 1:
+                            int nbre = this[index];
+                            // l'écrite xxx ? yyy : zzz est équivalente à 
+                            // Si xxx Alors yyy Sinon zzz
+                            return marquage.Contains(nbre) ? 1 : 0;
+                    }
+                }
+                // Non => Exception
+                throw new IndexOutOfRangeException();
+            }
+        }
+
+
+        /// <summary>
+        /// Test si un nombre est présent dans la ligne
+        /// </summary>
+        /// <param name="NombreAVerifier"></param>
+        /// <returns></returns>
+        public bool Verifier(int NombreAVerifier)
+        {
+            if ((NombreAVerifier >= 1) && (NombreAVerifier <= 90))
+            {
+                bool exist = false;
+                foreach (int number in lesNumeros)
+                {
+                    if (number == NombreAVerifier)
+                    {
+                        exist = true;
+                        break;
+                    }
+                }
+                return exist;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Marque le nombre passé en paramètre sur la ligne.
+        /// Il n'est marqué que si présent
+        /// </summary>
+        /// <param name="NombreAMarquer"></param>
+        /// <returns>Indique si le nombre a été marqué</returns>
+        public bool Marquer(int NombreAMarquer)
+        {
+            if (Verifier(NombreAMarquer))
+            {
+                // Déjà présent dans le marquage ?
+                if (!marquage.Contains(NombreAMarquer))
+                {
+                    marquage.Add(NombreAMarquer);
+                }
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Retourne la liste des nombres marqués sur la ligne
+        /// </summary>
+        public List<int> Marques
+        {
+            get
+            {
+                return new List<int>(this.marquage);
+            }
+        }
     }
 }
