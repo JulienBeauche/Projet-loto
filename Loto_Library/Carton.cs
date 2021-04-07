@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Loto2020_Correction
+namespace Loto_Library
 {
     /// <summary>
     /// Un carton c'est :
@@ -28,6 +28,7 @@ namespace Loto2020_Correction
             // !!! Les objects Ligne n'existent pas à ce stade
             lignes = new Ligne[3];
         }
+
 
         public Carton(int[,] contenu) : this()
         {

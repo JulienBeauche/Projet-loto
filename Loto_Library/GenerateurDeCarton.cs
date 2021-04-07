@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Loto2020_Correction
+namespace Loto_Library
 {
     public class GenerateurDeCarton
     {
